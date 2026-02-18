@@ -46,7 +46,7 @@ app.post("/ideas", async (req, res) => {
   res.status(201).json(data);
 });
 
-const port = process.env.PORT || 3000;
+
 app.delete("/ideas/:id", async (req, res) => {
   const id = Number(req.params.id);
   if (!id) return res.status(400).json({ error: "invalid id" });
