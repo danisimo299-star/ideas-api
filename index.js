@@ -16,7 +16,9 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-app.get("/", (req, res) => res.json({ ok: true }));
+app.get("/", (req, res) => {
+  res.json({ ok: true });
+});
 
 // 1) Получить все идеи
 app.get("/ideas", async (req, res) => {
@@ -54,4 +56,8 @@ app.delete("/ideas/:id", async (req, res) => {
 
   res.json({ ok: true });
 });
-app.listen(port, () => console.log("Server running on port " + port));
+const port = process.env.PORT || 3000;
+
+app.listen(port, "0.0.0.0", () => {
+  console.log("Server running on port " + port);
+});
