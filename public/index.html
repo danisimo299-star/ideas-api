@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Маркетплейс идей</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">IdeaMarket</div>
+      <nav class="nav-links">
+        <a href="#" data-route="home">Главная</a>
+        <a href="#" data-route="market">Маркет</a>
+        <a href="#" data-route="sell">Разместить идею</a>
+        <a href="#" data-route="my">Мои идеи</a>
+      </nav>
+      <button id="goSellBtn" class="btn btn-secondary">Продать идею</button>
+    </header>
+
+    <main class="container">
+      <section class="page active" id="page-home">
+        <div class="hero">
+          <h1>Маркетплейс идей</h1>
+          <p>Покупайте и продавайте готовые бизнес-идеи с безопасной сделкой.</p>
+          <div class="hero-actions">
+            <button class="btn" data-route="sell">Разместить идею</button>
+            <button class="btn btn-secondary" data-route="market">Смотреть идеи</button>
+          </div>
+        </div>
+
+        <div class="cards cards-3">
+          <article class="card">
+            <h3>Проверенные идеи</h3>
+            <p>Модерация карточек и валидация контактов автора.</p>
+          </article>
+          <article class="card">
+            <h3>Быстрый запуск</h3>
+            <p>Покупатель сразу получает описание, юнит-экономику и шаги запуска.</p>
+          </article>
+          <article class="card">
+            <h3>Безопасная сделка</h3>
+            <p>Имитация оформления сделки с подтверждением и историей заказов.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="page" id="page-market">
+        <div class="section-head">
+          <h2>Каталог идей</h2>
+          <div class="toolbar">
+            <input id="searchInput" type="search" placeholder="Поиск по названию или описанию" />
+            <select id="categoryFilter">
+              <option value="all">Все категории</option>
+              <option value="Tech">Tech</option>
+              <option value="E-commerce">E-commerce</option>
+              <option value="Food">Food</option>
+              <option value="Education">Education</option>
+              <option value="Green">Green</option>
+            </select>
+            <select id="sortFilter">
+              <option value="newest">Сначала новые</option>
+              <option value="priceAsc">Цена: по возрастанию</option>
+              <option value="priceDesc">Цена: по убыванию</option>
+            </select>
+          </div>
+        </div>
+        <div id="marketGrid" class="cards cards-3"></div>
+      </section>
+
+      <section class="page" id="page-sell">
+        <div class="section-head">
+          <h2>Разместить идею</h2>
+          <p>После публикации идея сразу появляется в каталоге и доступна покупателям.</p>
+        </div>
+        <form id="ideaForm" class="form card">
+          <label>Название идеи
+            <input name="title" required maxlength="80" placeholder="Например: AI-ассистент для HR" />
+          </label>
+          <label>Категория
+            <select name="category" required>
+              <option value="">Выберите категорию</option>
+              <option value="Tech">Tech</option>
+              <option value="E-commerce">E-commerce</option>
+              <option value="Food">Food</option>
+              <option value="Education">Education</option>
+              <option value="Green">Green</option>
+            </select>
+          </label>
+          <label>Цена (₽)
+            <input name="price" type="number" min="1000" step="500" required placeholder="50000" />
+          </label>
+          <label>Краткое описание
+            <textarea name="description" required maxlength="400" placeholder="Опишите идею, целевую аудиторию, как зарабатывать"></textarea>
+          </label>
+          <label>Имя автора
+            <input name="author" required maxlength="40" placeholder="Ваше имя" />
+          </label>
+          <button class="btn" type="submit">Опубликовать идею</button>
+        </form>
+      </section>
+
+      <section class="page" id="page-my">
+        <div class="section-head">
+          <h2>Мои идеи</h2>
+          <p>Управляйте своими публикациями и смотрите статусы.</p>
+        </div>
+        <div id="myIdeas" class="cards cards-2"></div>
+      </section>
+    </main>
+
+    <aside class="cart-panel card">
+      <h3>Сделки</h3>
+      <p class="muted">Добавленные к покупке идеи:</p>
+      <ul id="cartList" class="list"></ul>
+      <div class="cart-footer">
+        <strong id="cartTotal">Итого: ₽0</strong>
+        <button id="checkoutBtn" class="btn">Оформить</button>
+      </div>
+    </aside>
+
+    <template id="ideaCardTemplate">
+      <article class="card idea-card">
+        <div class="idea-top">
+          <span class="badge"></span>
+          <strong class="idea-price"></strong>
+        </div>
+        <h3 class="idea-title"></h3>
+        <p class="idea-description"></p>
+        <p class="muted idea-meta"></p>
+        <div class="idea-actions">
+          <button class="btn btn-small js-buy">Купить</button>
+          <button class="btn btn-secondary btn-small js-delete">Удалить</button>
+        </div>
+      </article>
+    </template>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

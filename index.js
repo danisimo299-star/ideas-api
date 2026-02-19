@@ -1,63 +1,56 @@
 import express from "express";
-import cors from "cors";
-import { createClient } from "@supabase/supabase-js";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
-app.use(cors());
+
+// ===== Настройки =====
+const PORT = process.env.PORT || 3000;
+
 app.use(express.json());
 
-// ВСТАВЬ СВОИ ДАННЫЕ:
-const SUPABASE_URL = process.env.SUPABASE_URL; 
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+// ===== Работа с путями =====
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-  console.error("Missing SUPABASE env vars");
-}
+// ===== Отдаём статические файлы =====
+app.use(express.static(path.join(__dirname, "public")));
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-
+// ===== Главная страница =====
 app.get("/", (req, res) => {
-  res.json({ ok: true });
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// 1) Получить все идеи
-app.get("/ideas", async (req, res) => {
-  const { data, error } = await supabase
-    .from("ideas")
-    .select("*")
-    .order("created_at", { ascending: false });
+// ===== Временная база (пока без Supabase) =====
+let ideas = [];
 
-  if (error) return res.status(500).json({ error: error.message });
-  res.json(data);
+// Получить все идеи
+app.get("/ideas", (req, res) => {
+  res.json(ideas);
 });
 
-// 2) Добавить идею
-app.post("/ideas", async (req, res) => {
-  const { title, description, price } = req.body || {};
-  if (!title) return res.status(400).json({ error: "title is required" });
+// Добавить идею
+app.post("/ideas", (req, res) => {
+  const { title, description, price } = req.body;
 
-  const { data, error } = await supabase
-    .from("ideas")
-    .insert([{ title, description: description ?? "", price: price ?? null }])
-    .select()
-    .single();
+  if (!title || !description || !price) {
+    return res.status(400).json({ error: "Missing fields" });
+  }
 
-  if (error) return res.status(500).json({ error: error.message });
-  res.status(201).json(data);
+  const newIdea = {
+    id: ideas.length + 1,
+    title,
+    description,
+    price,
+    created_at: new Date()
+  };
+
+  ideas.push(newIdea);
+
+  res.status(201).json(newIdea);
 });
 
-
-app.delete("/ideas/:id", async (req, res) => {
-  const id = Number(req.params.id);
-  if (!id) return res.status(400).json({ error: "invalid id" });
-
-  const { error } = await supabase.from("ideas").delete().eq("id", id);
-  if (error) return res.status(500).json({ error: error.message });
-
-  res.json({ ok: true });
-});
-const port = process.env.PORT || 3000;
-
-app.listen(port, "0.0.0.0", () => {
-  console.log("Server running on port " + port);
+// ===== Запуск сервера =====
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
